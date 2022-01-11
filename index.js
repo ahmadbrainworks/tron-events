@@ -5,9 +5,9 @@ const app = express()
 require('dotenv').config();
 
 const HttpProvider = TronWeb.providers.HttpProvider;
-const fullNode = new HttpProvider("http://161.117.83.38:8090");
-const solidityNode = new HttpProvider("http://161.117.83.38:8091");
-const eventServer = new HttpProvider("http://161.117.83.38:8080");
+const fullNode = new HttpProvider(`${process.env.RPC_HOST}:8090`);
+const solidityNode = new HttpProvider(`${process.env.RPC_HOST}:8091`);
+const eventServer = new HttpProvider(`${process.env.RPC_HOST}:8080`);
 const privateKey = "";
 const tronWeb = new TronWeb(fullNode,solidityNode,eventServer,privateKey);
 
@@ -15,11 +15,29 @@ const headers = {
     "content-type": "text/plain;"
   };
 
+  console.clear()
+  const fs = require('fs')
+
+fs.readFile('logo', 'utf8' , (err, data) => {
+  if (err) {
+    console.error(err)
+    return
+  }
+  console.log(data)
+  console.log(
+    '\n',
+    '[server running on:]', '\n',
+    `http://0.0.0.0:${process.env.PORT}`, '\n',
+    `http://localhost:${process.env.PORT}`,
+    '\n',
+  )
+})
+
 
 app.get("/api/events/:blockNumber", (req, res) => {
     var dataString = `{num: ${req.params.blockNumber}}`;
     var options = {
-      url: 'http://161.117.83.38:8091/walletsolidity/gettransactioninfobyblocknum',
+      url: `${process.env.RPC_HOST}:8091/walletsolidity/gettransactioninfobyblocknum`,
       method: "POST",
       headers: headers,
       body: dataString
